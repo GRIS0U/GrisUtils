@@ -1,6 +1,7 @@
 package com.example.addon.modules;
 
 import com.example.addon.AddonTemplate;
+import com.ibm.icu.text.PersonNameFormatter;
 import meteordevelopment.meteorclient.events.game.SendMessageEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.PacketListSetting;
@@ -12,6 +13,7 @@ import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.Packet;
+import net.minecraft.text.Text;
 
 import java.util.*;
 
@@ -19,6 +21,8 @@ public class PacketDelayer extends Module
 {
 
     private boolean delayingPackets = false;
+
+    private MinecraftClient mc = MinecraftClient.getInstance();
 
     List<Packet> delayedPackets = new ArrayList();
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -40,6 +44,7 @@ public class PacketDelayer extends Module
     {
         if (delayingPackets) {
             if (c2sPackets.get().contains(event.packet.getClass())) {
+                System.out.println("Le paquet est dans la liste sélectionnée ! Paquet : " + event.packet.getClass().getSimpleName());
                 event.cancel();
                 delayedPackets.add(event.packet);
             }
@@ -50,8 +55,9 @@ public class PacketDelayer extends Module
     private void onChatMessage(SendMessageEvent event) {
         if (!delayedPackets.isEmpty() && event.message.equals("send")) {
             event.cancel();
+            mc.inGameHud.getChatHud().addMessage(Text.of("Sending " + delayedPackets.size() + " packets."));
 
-            if (MinecraftClient.getInstance().getNetworkHandler() == null) return;
+            if (mc.getNetworkHandler() == null) return;
 
             List<Packet> packetsToSend = new ArrayList<>(delayedPackets);
 
@@ -59,11 +65,12 @@ public class PacketDelayer extends Module
             delayingPackets = false;
 
             for (Packet<?> packet : packetsToSend) {
-                MinecraftClient.getInstance().getNetworkHandler().sendPacket(packet);
+                mc.getNetworkHandler().sendPacket(packet);
             }
         }
         if (event.message.equals("delay")) {
             delayingPackets = true;
+            mc.inGameHud.getChatHud().addMessage(Text.of("Delaying packets."));
             event.cancel();
         }
     }
