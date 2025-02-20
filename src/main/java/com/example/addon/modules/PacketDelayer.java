@@ -53,19 +53,21 @@ public class PacketDelayer extends Module
 
     @EventHandler
     private void onChatMessage(SendMessageEvent event) {
-        if (!delayedPackets.isEmpty() && event.message.equals("send")) {
+        if (event.message.equals("send")) {
             event.cancel();
-            mc.inGameHud.getChatHud().addMessage(Text.of("Sending " + delayedPackets.size() + " packets."));
+            if(!delayedPackets.isEmpty()){
+                mc.inGameHud.getChatHud().addMessage(Text.of("Sending " + delayedPackets.size() + " packets."));
 
-            if (mc.getNetworkHandler() == null) return;
+                if (mc.getNetworkHandler() == null) return;
 
-            List<Packet> packetsToSend = new ArrayList<>(delayedPackets);
+                List<Packet> packetsToSend = new ArrayList<>(delayedPackets);
 
-            delayedPackets.clear();
-            delayingPackets = false;
+                delayedPackets.clear();
+                delayingPackets = false;
 
-            for (Packet<?> packet : packetsToSend) {
-                mc.getNetworkHandler().sendPacket(packet);
+                for (Packet<?> packet : packetsToSend) {
+                    mc.getNetworkHandler().sendPacket(packet);
+                }
             }
         }
         if (event.message.equals("delay")) {
