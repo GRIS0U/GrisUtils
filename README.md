@@ -1,4 +1,4 @@
-GrisUtils is an addon for the Meteor Client that adds 1 feature for now called packet delay
+GrisUtils is an addon for the Meteor Client that adds 1 feature for now called packet delay.
 This addon may have more features in the future.
 
 Features:
