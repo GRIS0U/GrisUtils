@@ -29,7 +29,7 @@ public class Escalator extends Module {
     private final Setting<Double> maxTpDistance = sgGeneral.add(new DoubleSetting.Builder()
         .name("max-tp-distance")
         .description("The maximum distance you can teleport through blocks.")
-        .defaultValue(5)
+        .defaultValue(7)
         .sliderMax(20)
         .build()
     );
@@ -62,6 +62,8 @@ public class Escalator extends Module {
                 }
 
                 pos = pos.offset(side.getOpposite());
+
+                if (!mc.world.getBlockState(pos).isOf(Blocks.AIR) && !mc.world.getBlockState(pos).isOf(Blocks.WATER)) return;
 
                 if (mc.world.getBlockState(pos).onUse(mc.world, mc.player, (BlockHitResult) hitResult) != ActionResult.PASS) return;
 
