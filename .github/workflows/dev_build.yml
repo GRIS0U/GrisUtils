@@ -26,8 +26,7 @@ jobs:
       - name: Extract Minecraft Version from fabric.mod.json
         id: extract_version
         run: |
-          # Utilise jq pour lire le fichier fabric.mod.json et extraire la version
-          mc_version=$(jq -r '.minecraft[0]' fabric.mod.json)
+          mc_version=$(jq -r '.minecraft[0]' src/main/resources/fabric.mod.json)
           echo "Minecraft Version: $mc_version"
           echo "MC_VERSION=$mc_version" >> $GITHUB_ENV  # Rendre la version disponible dans les étapes suivantes
 
