@@ -1,7 +1,6 @@
 package com.example.addon.modules;
 
-import com.example.addon.AddonTemplate;
-import com.ibm.icu.text.PersonNameFormatter;
+import com.example.addon.GrisUtils;
 import meteordevelopment.meteorclient.events.game.SendMessageEvent;
 import meteordevelopment.meteorclient.events.packets.PacketEvent;
 import meteordevelopment.meteorclient.settings.PacketListSetting;
@@ -19,7 +18,6 @@ import java.util.*;
 
 public class PacketDelayer extends Module
 {
-
     private boolean delayingPackets = false;
 
     private MinecraftClient mc = MinecraftClient.getInstance();
@@ -29,7 +27,7 @@ public class PacketDelayer extends Module
 
     public PacketDelayer()
     {
-        super(AddonTemplate.CATEGORY, "packet-delayer", "Delays selected packets.");
+        super(GrisUtils.CATEGORY, "packet-delayer", "Delay selected packets. Type \"delay\" to start delaying and \"send\" to send delayed packets.");
     }
 
     private final Setting<Set<Class<? extends Packet<?>>>> c2sPackets = sgGeneral.add(new PacketListSetting.Builder()

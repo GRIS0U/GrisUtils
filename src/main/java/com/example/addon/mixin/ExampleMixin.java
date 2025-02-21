@@ -1,6 +1,6 @@
 package com.example.addon.mixin;
 
-import com.example.addon.AddonTemplate;
+import com.example.addon.GrisUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +24,8 @@ public abstract class ExampleMixin {
     /**
      * Example Mixin injection targeting the {@code <init>} method (the constructor) at {@code TAIL} (end of method).
      */
-    @Inject(method = "<init>", at = @At("TAIL"))
+    //@Inject(method = "<init>", at = @At("TAIL"))
     private void onGameLoaded(RunArgs args, CallbackInfo ci) {
-        AddonTemplate.LOG.info("Hello from ExampleMixin!");
+        GrisUtils.LOG.info("Hello from ExampleMixin!");
     }
 }
