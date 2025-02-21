@@ -9,6 +9,9 @@ jobs:
       contents: write
 
     steps:
+      - name: Clean Gradle cache
+        run: ./gradlew clean build --refresh-dependencies
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
