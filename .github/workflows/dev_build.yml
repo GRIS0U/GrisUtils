@@ -26,12 +26,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Extract Minecraft Version from fabric.mod.json
-        id: extract_version
-        run: |
-          mc_version=$(jq -r '.depends.minecraft[0]' src/main/resources/fabric.mod.json)
-            echo "Minecraft Version is $mc_version"
-            echo "MC_VERSION=$mc_version" >> $GITHUB_ENV
+      #- name: Extract Minecraft Version from fabric.mod.json
+        #id: extract_version
+          #run: |
+          #mc_version=$(jq -r '.depends.minecraft[0]' src/main/resources/fabric.mod.json)
+          #echo "Minecraft Version is $mc_version"
+        #echo "MC_VERSION=$mc_version" >> $GITHUB_ENV
 
       - name: Release
         uses: marvinpinto/action-automatic-releases@latest
