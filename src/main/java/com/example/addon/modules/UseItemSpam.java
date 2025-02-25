@@ -7,8 +7,6 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.structure.StrongholdGenerator;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
@@ -19,7 +17,7 @@ public class UseItemSpam extends Module {
     private boolean spamming = false;
 
     public UseItemSpam() {
-        super(GrisUtils.CATEGORY, "use-item-spam", "Spam interact item packets. Send \"spam\" in the chat to start spamming, send \"spam stop\" to stop");
+        super(GrisUtils.CATEGORY, "item-use-spam", "Spam interact item packets. Send \"itemUseSpam\" in the chat to start spamming, send \"itemUseSpam stop\" to stop");
     }
 
     private final Setting<Double> sendPacketIterations = sgGeneral.add(new DoubleSetting.Builder()
@@ -46,15 +44,15 @@ public class UseItemSpam extends Module {
 
     @EventHandler
     private void onChatMessage(SendMessageEvent event) {
-        if (event.message.equals("spam")) {
+        if (event.message.equals("itemUseSpam") || event.message.equals("itemUseSpam start")) {
             event.cancel();
             spamming = true;
             startSpamming();
-            mc.inGameHud.getChatHud().addMessage(Text.of("Spamming item use packets..."));
-        } else if (event.message.equals("spam stop")) {
+            mc.inGameHud.getChatHud().addMessage(Text.of("Spamming use item packets..."));
+        } else if (event.message.equals("itemUseSpam stop")) {
             event.cancel();
             spamming = false;
-            mc.inGameHud.getChatHud().addMessage(Text.of("Item use spam stopped."));
+            mc.inGameHud.getChatHud().addMessage(Text.of("Use item spam stopped."));
         }
     }
 
