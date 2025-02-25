@@ -10,7 +10,6 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.network.PacketUtils;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.text.Text;
 
@@ -19,8 +18,6 @@ import java.util.*;
 public class PacketDelayer extends Module
 {
     private boolean delayingPackets = false;
-
-    private MinecraftClient mc = MinecraftClient.getInstance();
 
     List<Packet> delayedPackets = new ArrayList();
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -42,7 +39,6 @@ public class PacketDelayer extends Module
     {
         if (delayingPackets) {
             if (c2sPackets.get().contains(event.packet.getClass())) {
-                System.out.println("Le paquet est dans la liste sélectionnée ! Paquet : " + event.packet.getClass().getSimpleName());
                 event.cancel();
                 delayedPackets.add(event.packet);
             }

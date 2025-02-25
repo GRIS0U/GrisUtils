@@ -5,6 +5,7 @@ import com.example.addon.hud.HudExample;
 import com.example.addon.modules.Escalator;
 import com.example.addon.modules.ModuleExample;
 import com.example.addon.modules.PacketDelayer;
+import com.example.addon.modules.UseItemSpam;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -28,6 +29,7 @@ public class GrisUtils extends MeteorAddon {
         Modules.get().add(new ModuleExample());
         Modules.get().add(new PacketDelayer());
         Modules.get().add(new Escalator());
+        Modules.get().add(new UseItemSpam());
 
         // Commands
         Commands.add(new CommandExample());
