@@ -3,7 +3,7 @@
   "id": "gris-utils",
   "version": "${version}",
   "name": "GrisUtils",
-  "description": "An addon for Meteor Client that adds cool features for dupping.",
+  "description": "An addon for Meteor Client that adds cool features.",
   "authors": [
     "GRISOU"
   ],
