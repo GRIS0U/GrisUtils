@@ -59,13 +59,9 @@ public class SuperReach extends Module {
 
         int mouseState = GLFW.glfwGetMouseButton(window, GLFW.GLFW_MOUSE_BUTTON_LEFT);
 
-        if (!canClick && mouseState == GLFW.GLFW_RELEASE) {
-            canClick = true;
-            return;
-        }
-
-        Entity entity = raycastEntity();
-        if (canClick && mouseState == GLFW.GLFW_PRESS && entity != null) {
+        if (canClick && mouseState == GLFW.GLFW_PRESS) {
+            Entity entity = raycastEntity();
+            if (entity == null) return;
             setPos(entity.getPos(), true, entity);
             canClick = false;
         }
@@ -135,6 +131,10 @@ public class SuperReach extends Module {
                 finally {
                     if(entityToHit != null)
                         setPos(startPos, false, null);
+                    else
+                    {
+                        canClick = true;
+                    }
                 }
             }).start();
         }
