@@ -92,12 +92,11 @@ public class SuperReach extends Module {
 
 
         private void setPos (Vec3d targetPos){
+            mc.player.setVelocity(0, 0, 0);
             Vec3d startPos = mc.player.getPos();
 
-            // Calcul direction
             Vec3d direction = targetPos.subtract(startPos).normalize();
 
-            // Nouvelle position 5 blocs avant l’entité
             Vec3d safeTargetPos = targetPos.subtract(direction.multiply(3));
 
             double dx = safeTargetPos.x - startPos.x;
