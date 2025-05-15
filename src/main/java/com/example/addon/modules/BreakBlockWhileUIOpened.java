@@ -7,6 +7,7 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.*;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -33,10 +34,27 @@ public class BreakBlockWhileUIOpened extends Module {
     );
 
     private final Setting<Boolean> sendPacketBeforeBreaking = sgGeneral.add(new BoolSetting.Builder()
-        .name("send packets and break")
+        .name("send-packets-and-break")
         .description("Send packets before the server breaks the target block.")
         .defaultValue(false)
         .visible(() -> showSendPacketBeforeBreaking)
+        .build()
+    );
+
+    private final Setting<Boolean> usePing = sgGeneral.add(new BoolSetting.Builder()
+        .name("use-ping")
+        .description("Use ping to predict when the server breaks the block.")
+        .defaultValue(false)
+        .visible(() -> breakAndSendPacket.get())
+        .build()
+    );
+
+    private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
+        .name("Wait <?> ms")
+        .description("Delay in ms before or after sending packets")
+        .defaultValue(0)
+        .sliderRange(-100, 100)
+        .visible(() -> breakAndSendPacket.get())
         .build()
     );
 
@@ -65,8 +83,17 @@ public class BreakBlockWhileUIOpened extends Module {
                 blockToBreak = null;
                 if(breakAndSendPacket.get() && !sendPacketBeforeBreaking.get())
                 {
-                    //send at the moment where the server said that the block is destroyed to the client
-                    packetDelayer.SendDelayedPackets();
+                    new Thread(() -> {
+                        try {
+                            if(!usePing.get())
+                                Thread.sleep(delay.get());
+                            else if(delay.get() + mc.getNetworkHandler().getPlayerListEntry(mc.player.getUuid()).getLatency() > 0)
+                                Thread.sleep(delay.get() + mc.getNetworkHandler().getPlayerListEntry(mc.player.getUuid()).getLatency());
+                            packetDelayer.SendDelayedPackets();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
                 }
             }
         }
@@ -74,13 +101,41 @@ public class BreakBlockWhileUIOpened extends Module {
 
     @EventHandler
     private void onPacketSend(PacketEvent.Send event) {
-        if (event.packet instanceof PlayerActionC2SPacket packet) {
+        if (event.packet instanceof PlayerActionC2SPacket packet && sendPacketBeforeBreaking.get()) {
             if (packet.getAction() == PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK && blockToBreak != null) {
                 BlockPos pos = packet.getPos();
-                if(pos.equals(blockToBreak) && sendPacketBeforeBreaking.get())
-                {
-                    packetDelayer.SendDelayedPackets();
+                if (pos.equals(blockToBreak)) {
                     blockToBreak = null;
+
+                    PlayerActionC2SPacket breakBlockPacket = new PlayerActionC2SPacket(
+                        packet.getAction(),
+                        packet.getPos(),
+                        packet.getDirection(),
+                        packet.getSequence()
+                    );
+
+                    event.cancel();
+                    packetDelayer.SendDelayedPackets();
+
+                    if(!usePing.get() && delay.get() <= 0) {
+                        mc.getNetworkHandler().sendPacket(breakBlockPacket);
+                        return;
+                    }
+
+                    new Thread(() -> {
+                        try {
+                            int totalDelay = delay.get();
+                            if (usePing.get()) {
+                                totalDelay += mc.getNetworkHandler().getPlayerListEntry(mc.player.getUuid()).getLatency();
+                            }
+                            if(totalDelay < 0)
+                                totalDelay = 0;
+                            Thread.sleep(totalDelay);
+                            mc.getNetworkHandler().sendPacket(breakBlockPacket);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }).start();
                 }
             }
         }

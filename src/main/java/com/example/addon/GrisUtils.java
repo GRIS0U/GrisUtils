@@ -29,6 +29,7 @@ public class GrisUtils extends MeteorAddon {
         Modules.get().add(new UseItemSpam());
         Modules.get().add(new FireBallDodger());
         Modules.get().add(new BreakBlockWhileUIOpened());
+        Modules.get().add(new SuperReach());
 
 
         // Commands
