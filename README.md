@@ -9,3 +9,16 @@ This addon may have more features in the future.
     
    **Escalator:**
         Teleport you up and down though blocks.
+
+   **Break Block While UI Opened:**
+        Add a button to break a block while an UI is opened.
+        
+   **Fire Ball Dodger:**
+        Try to dodge fire balls.
+    
+   **SuperReach:**
+        Gives you insane reach.
+
+   **Use Item Spam**
+        Spam interact item packets.
+    
