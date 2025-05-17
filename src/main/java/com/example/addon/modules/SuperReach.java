@@ -164,14 +164,11 @@ public class SuperReach extends Module {
                         double y = startPos.y + dy * t;
                         double z = startPos.z + dz * t;
 
-                        float currentYaw = freeCam.yaw;
-                        float currentPitch = freeCam.pitch;
-
                         mc.execute(() -> {
                             if(mc.player != null) {
                                 mc.player.setPosition(x, y, z);
-                                mc.player.setYaw(currentYaw);
-                                mc.player.setPitch(currentPitch);
+                                mc.player.setYaw(freeCam.yaw);
+                                mc.player.setPitch(freeCam.pitch);
                             }
                         });
                         Thread.sleep(delay_);
@@ -181,23 +178,24 @@ public class SuperReach extends Module {
                     e.printStackTrace();
                 }
                 finally {
-                    if(entityToHit != null)
-                    {
-                        setPos(startPos, false, null);
-                        mc.getNetworkHandler().sendPacket(
-                            PlayerInteractEntityC2SPacket.attack(entityToHit, mc.player.isSneaking())
-                        );
-                    }
-                    else
+                    if(entityToHit == null)
                     {
                         settingNewPos = false;
                         canClick = true;
+
                         if (freeCam.isActive()) freeCam.toggle();
+
+                        if (fly.isActive() && !flyOldStatus) fly.toggle();
+
+                        if (noFall.isActive() && !noFallOldStatus) noFall.toggle();
                     }
-
-                    if (fly.isActive() && !flyOldStatus) fly.toggle();
-
-                    if (noFall.isActive() && !noFallOldStatus) noFall.toggle();
+                    else
+                    {
+                        mc.getNetworkHandler().sendPacket(
+                            PlayerInteractEntityC2SPacket.attack(entityToHit, mc.player.isSneaking())
+                        );
+                        setPos(startPos, false, null);
+                    }
                 }
             }).start();
         }
