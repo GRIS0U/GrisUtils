@@ -19,6 +19,6 @@ This addon may have more features in the future.
    **SuperReach:**
         Gives you insane reach.
 
-   **Use Item Spam**
+   **Use Item Spam:**
         Spam interact item packets.
     
