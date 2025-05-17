@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "ExampleMixin",
-    "HandledScreenMixin"
+    "HandledScreenMixin",
+    "LivingEntityRendererMixin",
+    "PlayerEntityRenderStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1
