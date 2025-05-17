@@ -48,9 +48,9 @@ public class SuperReach extends Module {
     private final Setting<Double> maxReach = sgGeneral.add(new DoubleSetting.Builder()
         .name("max-reach")
         .description("The maximum distance you can hit entities.")
-        .defaultValue(40)
-        .range(10, 100)
-        .sliderRange(10, 100)
+        .defaultValue(200)
+        .range(6, 10000)
+        .sliderRange(10, 300)
         .build());
 
     private final Setting<Double> step = sgGeneral.add(new DoubleSetting.Builder()
