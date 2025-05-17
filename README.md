@@ -1,4 +1,4 @@
-GrisUtils is an addon for the Meteor Client that adds 2 feature.
+GrisUtils is an addon for the Meteor Client that adds 6 feature.
 This addon may have more features in the future.
 
 # Features:
