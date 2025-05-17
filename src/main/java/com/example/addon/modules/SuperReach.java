@@ -40,6 +40,14 @@ public class SuperReach extends Module {
 
     public boolean settingNewPos = false;
 
+    private boolean flyWasActive;
+    private boolean freeCamWasActive;
+    private boolean noFallWasActive;
+
+    private Flight fly = Modules.get().get(Flight.class);
+    private Freecam freeCam = Modules.get().get(Freecam.class);
+    private NoFall noFall = Modules.get().get(NoFall.class);
+
     public SuperReach() {
         super(GrisUtils.CATEGORY, "super-reach", "Hit entities up to ? blocks.");
         instance = this;
@@ -99,6 +107,15 @@ public class SuperReach extends Module {
             Entity entity = raycastEntity();
             if (entity == null) return;
             if(mc.player.squaredDistanceTo(entity) < 5.5 * 5.5) return;
+
+            flyWasActive = fly.isActive();
+            freeCamWasActive = freeCam.isActive();
+            noFallWasActive = noFall.isActive();
+
+            if (!flyWasActive) fly.toggle();
+            if (!freeCamWasActive) freeCam.toggle();
+            if (!noFallWasActive) noFall.toggle();
+
             setPos(entity.getPos(), true, entity);
             canClick = false;
         }
@@ -127,17 +144,6 @@ public class SuperReach extends Module {
         private void setPos (Vec3d targetPos, boolean useDistance, Entity entityToHit){
             settingNewPos = true;
             ClientPlayNetworkHandler conn = mc.getNetworkHandler();
-            var fly = Modules.get().get(Flight.class);
-            boolean flyOldStatus = fly.isActive();
-            if (!fly.isActive()) fly.toggle();
-
-            var noFall = Modules.get().get(NoFall.class);
-            boolean noFallOldStatus = noFall.isActive();
-            if (!noFall.isActive()) noFall.toggle();
-
-            var freeCam = Modules.get().get(Freecam.class);
-            boolean freeCamOldStatus = freeCam.isActive();
-            if (!freeCam.isActive()) freeCam.toggle();
 
             mc.player.setVelocity(0, 0, 0);
             Vec3d startPos = mc.player.getPos();
@@ -180,14 +186,14 @@ public class SuperReach extends Module {
                 finally {
                     if(entityToHit == null)
                     {
-                        settingNewPos = false;
-                        canClick = true;
+                        mc.execute(() -> {
+                            if (!flyWasActive) fly.toggle();
+                            if (!freeCamWasActive) freeCam.toggle();
+                            if (!noFallWasActive) noFall.toggle();
 
-                        if (freeCam.isActive()) freeCam.toggle();
-
-                        if (fly.isActive() && !flyOldStatus) fly.toggle();
-
-                        if (noFall.isActive() && !noFallOldStatus) noFall.toggle();
+                            settingNewPos = false;
+                            canClick = true;
+                        });
                     }
                     else
                     {
