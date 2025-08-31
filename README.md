@@ -21,4 +21,7 @@ This addon may have more features in the future.
 
    **Use Item Spam:**
         Spam interact item packets.
+   
+   **Legal speed hack:**
+        Makes you strafe in a straight line.
     
