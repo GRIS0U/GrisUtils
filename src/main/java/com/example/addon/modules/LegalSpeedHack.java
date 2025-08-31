@@ -1,22 +1,15 @@
 package com.example.addon.modules;
 
 import com.example.addon.GrisUtils;
-import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.mixin.MouseMixin;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import meteordevelopment.meteorclient.systems.modules.render.FreeLook;
-import meteordevelopment.meteorclient.systems.modules.render.Freecam;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.input.CursorMovement;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MovementType;
-
-import java.awt.event.MouseEvent;
 
 public class LegalSpeedHack extends Module {
     private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -27,7 +20,7 @@ public class LegalSpeedHack extends Module {
     private boolean yawTweaked = false;
     private boolean airYawTweaked = false;
 
-    public static boolean freezeCamera = true;
+    public static boolean freezeCamera = false;
 
     public LegalSpeedHack() {
         super(GrisUtils.CATEGORY, "legal-speed-hack", "Boost ur speed legally");
@@ -50,17 +43,25 @@ public class LegalSpeedHack extends Module {
             forcedLeft = true;
             if(!yawTweaked)
             {
+                freezeCamera = true;
                 cameraEntity.setYaw(cameraEntity.getYaw() + 45f);
+
                 boolean previousTogglePerspective = freeLook.togglePerspective.get();
+                Double previousSens = freeLook.sensitivity.get();
                 freeLook.togglePerspective.set(false);
+
+                freeLook.sensitivity.set(0.0);
                 if(!freeLook.isActive()) freeLook.toggle();
-                freeLook.togglePerspective.set(previousTogglePerspective);
                 freeLook.cameraYaw = freeLook.cameraYaw - 45;
                 yawTweaked = true;
+
+                freeLook.sensitivity.set(previousSens);
+                freeLook.togglePerspective.set(previousTogglePerspective);
+                freezeCamera = false;
             }
             else
             {
-                if (!airYawTweaked && mc.options.jumpKey.isPressed()) {
+                if (!airYawTweaked && mc.options.jumpKey.isPressed() && !mc.player.isOnGround()) {
                     cameraEntity.setYaw(cameraEntity.getYaw() - 12.35f);
                     airYawTweaked = true;
                 }

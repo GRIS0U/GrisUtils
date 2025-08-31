@@ -6,7 +6,8 @@
     "ExampleMixin",
     "HandledScreenMixin",
     "LivingEntityRendererMixin",
-    "PlayerEntityRenderStateMixin"
+    "PlayerEntityRenderStateMixin",
+    "MouseLockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
